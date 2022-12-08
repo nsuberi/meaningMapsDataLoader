@@ -47,3 +47,14 @@ python dataLoad.py [-p] --process 1 (( WILL process actual node and edge creatio
 # Liam ~
 
 Navigate to localhost:3000 to view app running
+
+
+### Deploy to AWS
+
+Use CDK
+
+Setup steps for your own, personal AWS account
+
+Setup and Teardown
+* Setup with one command
+* Teardown with one command
