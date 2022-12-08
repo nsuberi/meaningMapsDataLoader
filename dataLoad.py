@@ -2,6 +2,20 @@ from neo4j import GraphDatabase
 import pandas as pd
 import numpy as np
 
+import argparse
+parser = argparse.ArgumentParser(prog = 'python dataLoad.py',
+                    description = 'Seed Neo4j database',
+                    epilog = 'Meaning++Maps')
+parser.add_argument("-p", "--process", required=True)
+args = parser.parse_args()
+
+try:
+    PROCESS = int(args.process)
+    if PROCESS not in [0,1]:
+        raise ValueError
+except:
+    raise ValueError(f'input supplied to --process should be 0 or 1, not {args.process}')
+
 ####
 ##  Database management
 ####
@@ -105,8 +119,8 @@ patterns['contains_count'] = patterns['Smaller Patterns'].apply(lambda val: len(
 patterns['contained_by_count'] = patterns['Bigger Patterns'].apply(lambda val: len(str(val).split(',')) if val not in ('', None, np.nan) else 0)
 print("total relationships", patterns['contains_count'].sum() + patterns['contained_by_count'].sum())
 
-process=False
-if process:
+# To do: update this to be controlled by a command line arg
+if PROCESS:
     uri = "neo4j://localhost:7687"
     driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
 
@@ -123,6 +137,7 @@ if process:
 
         # Clear all existing nodes and relationships
         session.run('MATCH (n) DETACH DELETE n')
+        # Todo: Is there a way to run a list of queries at the same time? Will this optimize?
         patterns['node_cypher'].apply(lambda txt: try_sesh(session, txt))
         patterns['contains_relationships'].apply(lambda txt: try_sesh_list(session, txt))
         patterns['contained_by_relationships'].apply(lambda txt: try_sesh_list(session, txt))

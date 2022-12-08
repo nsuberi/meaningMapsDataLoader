@@ -1,1 +1,49 @@
-# meaningMaps
+# Meaning++Maps
+
+Meaning is mapped using language, visuals, etc
+
+AI like Stable Diffusion for image generation, or ChatGPT for chatbot conversation illustrates how this is done, through machine learning
+
+I do this in conversation, as do you, and we try to "communicate", i.e. come to consensus on what meaning we are each 
+referring to, or at least figuring out how to work with each other to pursue each of our goals.
+
+This project documents some methods of mapping meaning, through illustrations of two books:
+* Christopher Alexander and team's "A Pattern Language"
+* Wittgenstein's "Tractatus Logico-Philosophicus"
+
+And an implementation of a short, interactive game:
+* Free Association
+
+# Spinning up
+
+### Make the database available
+
+On a computer with Docker Client running:
+
+``` sh neo4jup.sh```
+
+This will pull the latest docker image and run the container, mapping it to ports 7474 and 7687
+
+### Load the database with the data models used in our three applications
+
+You will need conda installed and configured on your machine to follow the next steps.
+If you do not have this, you can also run without conda by running ``` pip install -r requirements.txt```
+
+``` 
+conda create -n "meaningMapsDataLoad" python=3.9.15
+conda activate meaningMapsDataLoad
+pip install -r requirements.txt
+```
+
+Run
+
+```
+python dataLoad.py [-p] --process 0 (( will NOT process actual node and edge creation ))
+python dataLoad.py [-p] --process 1 (( WILL process actual node and edge creation ))
+```
+
+### Start react app
+
+# Liam ~
+
+Navigate to localhost:3000 to view app running
