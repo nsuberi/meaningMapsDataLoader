@@ -1,5 +1,6 @@
 from neo4j import GraphDatabase
 import pandas as pd
+import numpy as np
 
 ####
 ##  Database management
@@ -92,49 +93,59 @@ def create_pattern_edges(row, relationship_type):
     edge_cyphers = map(craft_edge_cypher, node_id2s)
     return list(edge_cyphers)
 
-
-
 patterns['node_cypher'] = patterns.apply(create_pattern_nodes, axis=1)
 patterns['contains_relationships'] = patterns.apply(lambda row: create_pattern_edges(row, 'contains'), axis=1)
 patterns['contained_by_relationships'] = patterns.apply(lambda row: create_pattern_edges(row, 'contained_by'), axis=1)
 
+# Pattern information, number of rows is number of nodes
 print(patterns)
 
-uri = "neo4j://localhost:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
+# Number of edges to creategit
+patterns['contains_count'] = patterns['Smaller Patterns'].apply(lambda val: len(str(val).split(',')) if val not in ('', None, np.nan) else 0)
+patterns['contained_by_count'] = patterns['Bigger Patterns'].apply(lambda val: len(str(val).split(',')) if val not in ('', None, np.nan) else 0)
+print("total relationships", patterns['contains_count'].sum() + patterns['contained_by_count'].sum())
 
-with driver.session() as session:
-    def try_sesh(session, txt):
-        try:
-            session.run(txt)
-        except:
+process=False
+if process:
+    uri = "neo4j://localhost:7687"
+    driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
+
+    with driver.session() as session:
+        def try_sesh(session, txt):
             try:
-                map(session.run, txt)
-            except:
-                print("Error on processing", txt)
+                session.run(txt)
+            except BaseException as e:
+                print("Error on processing", txt, e)
 
-    patterns['node_cypher'].apply(lambda txt: try_sesh(session, txt))
-    patterns['contains_relationships'].apply(lambda txt: try_sesh(session, txt))
-    patterns['contained_by_relationships'].apply(lambda txt: try_sesh(session, txt))
+        def try_sesh_list(session, txt_list):
+            for txt in txt_list:
+                try_sesh(session, txt)
 
+        # Clear all existing nodes and relationships
+        session.run('MATCH (n) DETACH DELETE n')
+        patterns['node_cypher'].apply(lambda txt: try_sesh(session, txt))
+        patterns['contains_relationships'].apply(lambda txt: try_sesh_list(session, txt))
+        patterns['contained_by_relationships'].apply(lambda txt: try_sesh_list(session, txt))
+
+    driver.close()
 ####
 ##  Sample connection
 ####
-
-uri = "neo4j://localhost:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
-
-def create_person(tx, name):
-    tx.run("CREATE (a:Person {name: $name})", name=name)
-
-def create_friend_of(tx, name, friend):
-    tx.run("MATCH (a:Person) WHERE a.name = $name "
-           "CREATE (a)-[:KNOWS]->(:Person {name: $friend})",
-           name=name, friend=friend)
-
-with driver.session() as session:
-    session.execute_write(create_person, "Alice")
-    session.execute_write(create_friend_of, "Alice", "Bob")
-    session.execute_write(create_friend_of, "Alice", "Carl")
-
-driver.close()
+#
+# uri = "neo4j://localhost:7687"
+# driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
+#
+# def create_person(tx, name):
+#     tx.run("CREATE (a:Person {name: $name})", name=name)
+#
+# def create_friend_of(tx, name, friend):
+#     tx.run("MATCH (a:Person) WHERE a.name = $name "
+#            "CREATE (a)-[:KNOWS]->(:Person {name: $friend})",
+#            name=name, friend=friend)
+#
+# with driver.session() as session:
+#     session.execute_write(create_person, "Alice")
+#     session.execute_write(create_friend_of, "Alice", "Bob")
+#     session.execute_write(create_friend_of, "Alice", "Carl")
+#
+# driver.close()
