@@ -44,9 +44,24 @@ python dataLoad.py [-p] --process 1 (( WILL process actual node and edge creatio
 
 ### Start react app
 
-# Liam ~
+#### Update version of npm and install compatible version of node.js
+* npm install -g npm
+* https://nodejs.org/en/
+* nvm install --lts
+* nvm use --lts
+
+#### Install and run create-react-app
+npm install -g create-react-app
+npx create-react-app meaning_maps
+cd meaning_maps
+npm start
+
+npm audit fix --force
+
 
 Navigate to localhost:3000 to view app running
+
+
 
 
 ### Deploy to AWS
