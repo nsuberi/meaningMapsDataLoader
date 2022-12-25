@@ -122,7 +122,7 @@ print("total relationships", patterns['contains_count'].sum() + patterns['contai
 # To do: update this to be controlled by a command line arg
 if PROCESS:
     uri = "neo4j://localhost:7687"
-    driver = GraphDatabase.driver(uri, auth=("neo4j", "test"))
+    driver = GraphDatabase.driver(uri) # , auth=("neo4j", "testpassword")
 
     with driver.session() as session:
         def try_sesh(session, txt):
