@@ -2,7 +2,10 @@ import React from 'react';
 import { useReadCypher } from 'use-neo4j';
 import './App.css';
 import { Graph } from 'graphology';
-import { PixiGraph } from 'pixi-graph';
+
+import { render } from "react-pixi-fiber";
+import * as PIXI from "pixi.js";
+import Rectangle from "./components/Rectangle"
 
 
 function App() {
@@ -19,16 +22,12 @@ function App() {
   else if ( !loading ) {
     // Get the count
     if (first) {
-
-      // console.log(records)
       console.log(first)
 
       const count = records.length
-
+      
+      // Initialize and populate Graphology graph with data
       const graph = new Graph();
-      // populate Graphology graph with data
-      // assign layout positions as `x`, `y` node attributes
-
       records.forEach((record)=> {
         const pattern = record.get('ptrn')
         const node_id = pattern.properties.id
@@ -40,39 +39,34 @@ function App() {
         })
       })
       
-
-      const style = {
-        node: {
-          color: '#00FF00',
-          label: {
-            content: node => node.name,
-            fontFamily: 'HelveticaRegular',
-          },
-        },
-        edge: {
-          color: '#000000',
-        },
-      };
-
+      // assign layout positions as `x`, `y` node attributes
       graph.forEachNode(node => {
         graph.setNodeAttribute(node, 'x', Math.random());
         graph.setNodeAttribute(node, 'y', Math.random());
       });
 
+      // Print node attribtues to console
       graph.forEachNode(node => {
         console.log(graph.getNodeAttributes(node))
       });
 
-      const resources = [
-        { name: 'HelveticaRegular', url: 'https://gist.githubusercontent.com/zakjan/b61c0a26d297edf0c09a066712680f37/raw/8cdda3c21ba3668c3dd022efac6d7f740c9f1e18/HelveticaRegular.fnt' },
-      ];
+      // Setup PixiJS Application
 
-      const pixiGraph = new PixiGraph({
-        container: document.getElementById('graph'),
-        graph,
-        style,
-        resources
+      const canvasElement = document.getElementById("graph")
+      const app = new PIXI.Application(800, 600, {
+        view: canvasElement
       });
+
+      render(
+        <Rectangle
+          x={250}
+          y={200}
+          width={300}
+          height={200}
+          fill={0xFFFF00}
+        />, 
+        app.stage
+      );
 
       result = (<div>There are {count} nodes in the database.</div>)
     }
