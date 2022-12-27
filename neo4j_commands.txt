@@ -7,4 +7,6 @@ MATCH (n)
 RETURN n
 
 # Delete all nodes with id > 10
-
+WITH 10 AS minId
+MATCH (ptrn:Pattern WHERE ptrn.id > minId)
+DETACH DELETE ptrn
