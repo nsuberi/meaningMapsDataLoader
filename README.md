@@ -14,6 +14,9 @@ This project documents some methods of mapping meaning, through illustrations of
 And an implementation of a short, interactive game:
 * Free Association
 
+Explore chords on the helix
+* Musical Visualization
+
 # Spinning up
 
 ### Make the database available
