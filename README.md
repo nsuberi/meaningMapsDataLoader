@@ -1,4 +1,8 @@
-# Meaning++Maps
+# Meaning++Maps Data Loader
+
+Instantiate and seed databases for Meaning++Maps web canvas
+
+~~~~~
 
 Meaning is mapped using language, visuals, etc
 
