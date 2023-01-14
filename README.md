@@ -2,7 +2,7 @@
 
 Instantiate and seed databases for Meaning++Maps web canvas
 
-~~~~~
+---
 
 Meaning is mapped using language, visuals, etc
 
@@ -48,35 +48,3 @@ Run
 python dataLoad.py [-p] --process 0 (( will NOT process actual node and edge creation ))
 python dataLoad.py [-p] --process 1 (( WILL process actual node and edge creation ))
 ```
-
-### Start react app
-
-#### Update version of npm and install compatible version of node.js
-* npm install -g npm
-* https://nodejs.org/en/
-* nvm install --lts
-* nvm use --lts
-
-#### Install and run create-react-app
-npm install -g create-react-app
-npx create-react-app meaning_maps
-cd meaning_maps
-npm start
-
-npm audit fix --force
-
-
-Navigate to localhost:3000 to view app running
-
-
-
-
-### Deploy to AWS
-
-Use CDK
-
-Setup steps for your own, personal AWS account
-
-Setup and Teardown
-* Setup with one command
-* Teardown with one command

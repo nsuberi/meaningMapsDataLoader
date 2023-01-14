@@ -143,6 +143,8 @@ if PROCESS:
         patterns['contained_by_relationships'].apply(lambda txt: try_sesh_list(session, txt))
 
     driver.close()
+
+
 ####
 ##  Sample connection
 ####
